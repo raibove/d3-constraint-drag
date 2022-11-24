@@ -75,12 +75,14 @@
           .attr("r", 10)
           .attr("class", "handle")
           .attr("transform", function (d) {
-            return "rotate(" + angularScale(abval) + ") translate(0,-130)";
+            return (
+              "rotate(" + angularScale(abval) + ") translate(0,-" + radius + ")"
+            );
           })
           .call(drag);
         join.attr("transform", function (d) {
           return (
-            "rotate(" + angularScale(abval) + ")  translate(" + radius + ",0)"
+            "rotate(" + angularScale(abval) + ")  translate(0,-" + radius + ")"
           );
         });
       }
@@ -93,8 +95,12 @@
         let x = coordinates[0] - radius;
         let y = coordinates[1] - radius;
         var newAngle = Math.atan2(y, x) * 57.2957795;
-        if (newAngle < 0) {
-          newAngle = 360 + newAngle;
+        if (newAngle > 0) {
+          newAngle += 90;
+        } else if (newAngle < 0 && newAngle > -90) {
+          newAngle = newAngle + 90;
+        } else if (newAngle < -90) {
+          newAngle = 360 + newAngle + 90;
         }
 
         abval = angularScale.invert(newAngle);
