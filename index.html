@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <title>ring control</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js"
+      charset="utf-8"
+    ></script>
+    <style type="text/css">
+      .handle {
+        fill: #fff;
+        stroke: #000;
+        stroke-width: 4;
+        cursor: all-scroll;
+      }
+
+      .handle.active {
+        stroke: #f00;
+      }
+
+      .ring {
+        fill: none;
+        stroke: #000;
+        stroke-width: 4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ring-input"></div>
+
+    <script type="text/javascript">
+      let values = [{ value: 0, label: "A" }];
+      let dragging = null;
+
+      let height = 300,
+        width = 300,
+        margin = { top: 20, left: 20, bottom: 20, right: 20 };
+      let radius = (height - margin.top - margin.bottom) / 2;
+
+      let parent = d3
+        .select(".ring-input")
+        .append("svg")
+        .attr("height", height)
+        .attr("width", width)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      let angularScale = d3.scaleLinear().range([0, 360]);
+      //.domain([0,total]);
+
+      let ring = parent
+        .append("g")
+        .attr("id", "rim")
+        .attr("transform", "translate(" + radius + "," + radius + ")");
+
+      ring.append("circle").attr("r", radius).attr("class", "ring");
+      let abval = 0;
+      let handles = parent
+        .append("g")
+        .attr("id", "handles")
+        .attr("transform", "translate(" + radius + "," + radius + ")");
+
+      let drag = d3
+        .drag()
+        .subject(function (event, d) {
+          return event;
+        })
+        .on("drag", dragmove);
+      //.on('dragend', function(){ d3.select(this).classed('active',false); });
+
+      function drawHandles() {
+        let join = handles.selectAll("circle").data(values);
+        join
+          .enter()
+          .append("circle")
+          .attr("r", 10)
+          .attr("class", "handle")
+          .attr("transform", function (d) {
+            return "rotate(" + angularScale(abval) + ") translate(0,-130)";
+          })
+          .call(drag);
+        join.attr("transform", function (d) {
+          return (
+            "rotate(" + angularScale(abval) + ")  translate(" + radius + ",0)"
+          );
+        });
+      }
+
+      drawHandles();
+
+      function dragmove(d, i) {
+        //d3.select(this).classed('active',true);
+        let coordinates = d3.pointer(d.sourceEvent, parent.node());
+        let x = coordinates[0] - radius;
+        let y = coordinates[1] - radius;
+        var newAngle = Math.atan2(y, x) * 57.2957795;
+        if (newAngle < 0) {
+          newAngle = 360 + newAngle;
+        }
+
+        abval = angularScale.invert(newAngle);
+        drawHandles();
+      }
+    </script>
+  </body>
+</html>
