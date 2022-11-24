@@ -30,7 +30,7 @@
     <script type="text/javascript">
       let values = [{ value: 0, label: "A" }];
       let dragging = null;
-
+      let newAngle = 0;
       let height = 300,
         width = 300,
         margin = { top: 20, left: 20, bottom: 20, right: 20 };
@@ -53,7 +53,7 @@
         .attr("transform", "translate(" + radius + "," + radius + ")");
 
       ring.append("circle").attr("r", radius).attr("class", "ring");
-      let abval = 0;
+      let abval = angularScale.invert(0);
       let handles = parent
         .append("g")
         .attr("id", "handles")
@@ -94,15 +94,16 @@
         let coordinates = d3.pointer(d.sourceEvent, parent.node());
         let x = coordinates[0] - radius;
         let y = coordinates[1] - radius;
-        var newAngle = Math.atan2(y, x) * 57.2957795;
-        if (newAngle > 0) {
-          newAngle += 90;
-        } else if (newAngle < 0 && newAngle > -90) {
-          newAngle = newAngle + 90;
-        } else if (newAngle < -90) {
-          newAngle = 360 + newAngle + 90;
+        let currentAngle = Math.atan2(y, x) * 57.2957795;
+        if (currentAngle > 0) {
+          currentAngle += 90;
+        } else if (currentAngle < 0 && currentAngle > -90) {
+          currentAngle = currentAngle + 90;
+        } else if (currentAngle < -90) {
+          currentAngle = 360 + currentAngle + 90;
         }
 
+        if (currentAngle > newAngle) newAngle = currentAngle;
         abval = angularScale.invert(newAngle);
         drawHandles();
       }
