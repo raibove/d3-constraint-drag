@@ -105,12 +105,16 @@
         let x = coordinates[0] - radius;
         let y = coordinates[1] - radius;
         currentAngle = Math.atan2(y, x) * 57.2957795;
+
         if (currentAngle > 0) {
           currentAngle += 90;
         } else if (currentAngle < 0 && currentAngle > -90) {
           currentAngle = currentAngle + 90;
         } else if (currentAngle < -90) {
           currentAngle = 360 + currentAngle + 90;
+        }
+        if (currentAngle > 359) {
+          currentAngle = 360;
         }
 
         if (currentAngle > newAngle) abval = angularScale.invert(currentAngle);
