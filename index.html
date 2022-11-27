@@ -32,6 +32,9 @@
 
     <script type="text/javascript">
       let values = [{ value: 0, label: "A" }];
+      let arrCoor = [];
+      let arrAngle = [];
+      let angleIndex = 0;
       let dragging = null;
       let newAngle = 0;
       let currentAngle = 0;
@@ -67,8 +70,29 @@
         .on("drag", dragmove)
         .on("end", function (d) {
           newAngle = currentAngle;
+          arrCoor.push([lx, ly]);
+          arrAngle.push(angularScale(abval));
+          angleIndex++;
+          addArc();
         });
 
+      function addArc() {
+        var pi = Math.PI;
+
+        let arc = d3
+          .arc()
+          .innerRadius(0)
+          .outerRadius(radius)
+          .startAngle(arrAngle[angleIndex - 1] * (pi / 180))
+          .endAngle(arrAngle[angleIndex] * (pi / 180));
+        ring
+          .append("path")
+          .attr("class", "arc")
+          .attr("d", arc)
+          .attr("fill", function () {
+            return "hsl(" + Math.floor(Math.random() * 16777215) + ",100%,50%)";
+          });
+      }
       let hndl = ring
         .append("circle")
         .attr("r", 10)
@@ -87,17 +111,21 @@
       let elemn = document.getElementById("rim");
       let rg = elem.getBoundingClientRect();
 
-      lx = hf.x;
-      ly = hf.y;
-
+      lx = hf.x - 20;
+      ly = hf.y - 10;
+      let originx = rg.x - 20;
+      let originy = rg.y + radius - 20;
       let connector = parent
         .append("line")
         .style("stroke", "black")
         .style("stroke-width", 2)
-        .attr("x1", rg.x - 20)
-        .attr("y1", rg.y + radius - 20)
-        .attr("x2", lx - 20)
-        .attr("y2", ly - 10);
+        .attr("x1", originx)
+        .attr("y1", originy)
+        .attr("x2", lx)
+        .attr("y2", ly);
+
+      arrCoor.push([lx, ly]);
+      arrAngle.push(0);
 
       function dragmove(d, i) {
         //d3.select(this).classed('active',true);
