@@ -101,7 +101,7 @@
 
       let hndl = ring
         .append("circle")
-        .attr("r", 10)
+        .attr("r", 2)
         .attr("class", "handle")
         .attr("id", "handle")
         .attr("transform", function (d) {
@@ -117,10 +117,10 @@
       let elemn = document.getElementById("rim");
       let rg = elem.getBoundingClientRect();
 
-      lx = hf.x - 20;
-      ly = hf.y - 10;
-      let originx = rg.x - 20;
-      let originy = rg.y + radius - 15;
+      lx = hf.x - 30;
+      ly = hf.y - 20;
+      let originx = rg.x - 30;
+      let originy = rg.y + radius - 20;
       let connector = parent
         .append("line")
         .style("stroke", "black")
@@ -160,9 +160,9 @@
 
         let elem = document.getElementById("handle");
         let hf = elem.getBoundingClientRect();
-        lx = hf.x;
-        ly = hf.y;
-        connector.attr("x2", lx - 20).attr("y2", ly - 10);
+        lx = hf.x - 30;
+        ly = hf.y - 20;
+        connector.attr("x2", lx).attr("y2", ly);
       }
     </script>
   </body>
