@@ -93,6 +93,7 @@
             return "hsl(" + Math.floor(Math.random() * 16777215) + ",100%,50%)";
           });
       }
+
       let hndl = ring
         .append("circle")
         .attr("r", 10)
@@ -114,7 +115,7 @@
       lx = hf.x - 20;
       ly = hf.y - 10;
       let originx = rg.x - 20;
-      let originy = rg.y + radius - 20;
+      let originy = rg.y + radius - 15;
       let connector = parent
         .append("line")
         .style("stroke", "black")
