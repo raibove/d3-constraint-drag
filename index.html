@@ -9,6 +9,7 @@
       .ring-input {
         margin: 20px;
       }
+
       .handle {
         fill: #fff;
         stroke: #000;
@@ -32,7 +33,6 @@
 
     <script type="text/javascript">
       let values = [{ value: 0, label: "A" }];
-      let arrCoor = [];
       let arrAngle = [];
       let angleIndex = 0;
       let dragging = null;
@@ -44,6 +44,7 @@
       let radius = (height - margin.top - margin.bottom) / 2;
       let lx = 10,
         ly = 10;
+
       let parent = d3
         .select(".ring-input")
         .append("svg")
@@ -70,12 +71,16 @@
         .on("drag", dragmove)
         .on("end", function (d) {
           newAngle = currentAngle;
-          arrCoor.push([lx, ly]);
           arrAngle.push(angularScale(abval));
           angleIndex++;
           addArc();
+          hndl.moveToFront();
         });
-
+      d3.selection.prototype.moveToFront = function () {
+        return this.each(function () {
+          this.parentNode.appendChild(this);
+        });
+      };
       function addArc() {
         var pi = Math.PI;
 
@@ -125,7 +130,6 @@
         .attr("x2", lx)
         .attr("y2", ly);
 
-      arrCoor.push([lx, ly]);
       arrAngle.push(0);
 
       function dragmove(d, i) {
