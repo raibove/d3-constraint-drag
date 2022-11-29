@@ -134,7 +134,9 @@
           if (currentAngle > 359) {
             currentAngle = 360;
           }
-
+          if (tempAngle == 0 && currentAngle > 290) {
+            return;
+          }
           if (currentAngle > newAngle && tempAngle < currentAngle)
             abval = angularScale.invert(currentAngle);
 
