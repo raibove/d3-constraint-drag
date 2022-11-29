@@ -6,9 +6,9 @@
       charset="utf-8"
     ></script>
     <style type="text/css">
-      /* .ring-input {
+      .ring-input {
         margin: 20px;
-      } */
+      }
 
       body {
         margin: 0;
@@ -22,10 +22,6 @@
         cursor: all-scroll;
       }
 
-      .handle.active {
-        stroke: #f00;
-      }
-
       .ring {
         fill: none;
         stroke: #000;
@@ -37,20 +33,20 @@
     <div class="ring-input"></div>
 
     <script type="text/javascript">
-      let values = [{ value: 0, label: "A" }];
       let arrAngle = [];
       let angleIndex = 0;
-      let dragging = null;
+      let pi = Math.PI;
+
       let newAngle = 0;
       let tempAngle = 0;
       let height = 300,
         width = 300,
-        margin = { top: 5, left: 5, bottom: 5, right: 5 };
+        margin = { top: 15, left: 15, bottom: 15, right: 15 };
       let radius = (height - margin.top - margin.bottom) / 2;
-      let lx = 10,
-        ly = 10;
 
-      let pi = Math.PI;
+      let angularScale = d3.scaleLinear().range([0, 359]);
+      let abval = angularScale.invert(0);
+
       let parent = d3
         .select(".ring-input")
         .append("svg")
@@ -58,8 +54,6 @@
         .attr("width", width)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      let angularScale = d3.scaleLinear().range([0, 359]);
 
       let ring = parent
         .append("g")
@@ -71,7 +65,6 @@
         .attr("r", radius)
         .attr("class", "ring")
         .attr("id", "ring");
-      let abval = angularScale.invert(0);
 
       let drag = d3
         .drag()
@@ -81,7 +74,6 @@
         .on("drag", dragmove)
         .on("end", function (d) {
           newAngle = tempAngle;
-
           arrAngle.push(angularScale(abval));
           angleIndex++;
           addArc();
@@ -114,7 +106,7 @@
 
       let hndl = ring
         .append("circle")
-        .attr("r", 5)
+        .attr("r", 10)
         .attr("class", "handle")
         .attr("id", "handle")
         .attr("transform", function (d) {
@@ -124,41 +116,15 @@
         })
         .call(drag);
 
-      let elem = document.getElementById("handle");
-      let hf = elem.getBoundingClientRect();
-
-      let elemn = document.getElementById("rim");
-      let rg = elemn.getBoundingClientRect();
-
-      lx = hf.x;
-      ly = hf.y;
-      let originx = rg.x;
-      let originy = rg.y;
-
-      let connector = ring
-        .append("line")
-        .style("stroke", "black")
-        .style("stroke-width", 2)
-        .attr("x1", originx)
-        .attr("y1", originy)
-        .attr("x2", lx)
-        .attr("y2", ly);
-
       arrAngle.push(0);
 
       function dragmove(d, i) {
-        //d3.select(this).classed('active',true);
-
         if (tempAngle != 360) {
           let coordinates = d3.pointer(d.sourceEvent, parent.node());
           let x = coordinates[0] - radius;
           let y = coordinates[1] - radius;
           let currentAngle = Math.atan2(y, x) * (180 / pi);
-          // if (currentAngle > 0) {
-          //   currentAngle += 90;
-          // } else if (currentAngle < 0 && currentAngle > -90) {
-          //   currentAngle = currentAngle + 90;
-          // }
+
           if (currentAngle < -90) {
             currentAngle += 360 + 90;
           } else {
@@ -182,11 +148,6 @@
             );
           });
 
-          let elem = document.getElementById("handle");
-          let hf = elem.getBoundingClientRect();
-          lx = hf.x;
-          ly = hf.y;
-          connector.attr("x2", lx).attr("y2", ly);
           tempAngle = currentAngle;
         }
       }
