@@ -11,7 +11,7 @@
       }
 
       .handle {
-        fill: #fff;
+        fill: #000;
         stroke: #000;
         stroke-width: 4;
         cursor: all-scroll;
@@ -81,6 +81,7 @@
           this.parentNode.appendChild(this);
         });
       };
+
       function addArc() {
         var pi = Math.PI;
 
@@ -101,12 +102,12 @@
 
       let hndl = ring
         .append("circle")
-        .attr("r", 2)
+        .attr("r", 5)
         .attr("class", "handle")
         .attr("id", "handle")
         .attr("transform", function (d) {
           return (
-            "rotate(" + angularScale(abval) + ")  translate(0,-" + radius + ")"
+            "rotate(" + angularScale(abval) + ")  translate(2,-" + radius + ")"
           );
         })
         .call(drag);
